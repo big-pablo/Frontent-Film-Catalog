@@ -5,3 +5,26 @@
 .bring-to-bottom {
     margin-top: 10rem!important;
 }
+
+
+.films-container
+{
+    margin: 0px 120px 0px 120px;
+}
+
+.film-image
+{
+    object-position: center;
+    max-height: 150px;
+    max-width: 125px;
+    object-fit: scale-down;
+    width: 100%;
+}
+
+.film-rating
+{
+    color:white;
+    background: blue;
+    border: 4px solid blue;
+    border-radius: 10px;
+}

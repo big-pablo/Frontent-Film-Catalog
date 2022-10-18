@@ -8,7 +8,28 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
-
+    <div class="border row d-none" id="film-card">
+        <img id="film-image" class="col-2 m-4 film-image" src="" alt="">
+        <div class="col-7 mt-3">
+        <h3 id="film-header"></h3>
+        <div id="film-year"></div>
+        <div id="film-year-n-genre" class="pt-5"></div>
+        </div>
+        <div class="col-auto align-self-center justify-content-end">
+            <div id="film-rating" class="film-rating">Средняя оценка - </div>
+        </div>
+    </div>
+    <div class="border row d-none">
+        <img id="film-image" class="col-2 m-4 film-image" src="" alt="">
+        <div class="col-7 mt-3">
+        <h3 id="film-header"></h3>
+        <div id="film-year"></div>
+        <div id="film-year-n-genre" class="pt-5"></div>
+        </div>
+        <div class="col-2 align-self-center justify-content-end">
+            <div id="film-rating" class="film-rating">Средняя оценка 14,8</div>
+        </div>
+    </div>
     <li class="nav-item d-none" id="auth-user-navbar-template"> <!--Для серого текста добавить .text-muted-->
         <a class="nav-link active"href=""></a>  
     </li>
@@ -31,26 +52,8 @@
         </div>
     </nav>
     <main class="container mt-4">        
-        <div id="card films-container" class="border">
-            <div class="row">
-                <img class="col-2 m-4" src="/imgs/Green_mile_film.jpg" alt="">
-                <div class="col-8">
-                    <div class="row-1">
-                    <h3 class="fw-bold mt-4">Зелёная Миля</h3>
-                    </div>
-                    <div class="row-1">
-                        <div>1999</div>
-                    </div>
-                    <div class="row align-items-end bring-to-bottom">
-                        <div class="col-auto pe-1 ">Новая Зеландия</div>
-                        <div class="col-auto pe-1 ps-1 ">●</div>
-                        <div class="col-auto ps-1">фентези, приключения, драма</div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="align-middle">Средняя оценка</div>
-                </div>
-            </div>
+        <div id="films-container" class="films-container">
+            
         </div>
   </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
