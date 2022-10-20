@@ -1,5 +1,6 @@
 $(document).ready(function (){
     LoadFilms();
+    CheckforAuth();
 });
 
 function LoadFilms(){
@@ -8,7 +9,6 @@ function LoadFilms(){
         return response.json();
     })
     .then((json) => {
-        console.log(json)
         $("#films-container").empty();
         let template = $('#film-card');
         for (let film of json.movies)
@@ -37,8 +37,6 @@ function LoadFilms(){
                 totalPoints += review.rating;
             }
             let avgRating = totalPoints/film.reviews.length;
-            console.log(typeof(avgRating));
-            console.log(avgRating);
             if (isNaN(avgRating))
             {
                 block.find("#film-rating").text("Отзывов пока нет");
@@ -51,4 +49,42 @@ function LoadFilms(){
             $("#films-container").append(block);
         }
     });
+}
+
+function CheckforAuth(){
+    fetch("https://react-midterm.kreosoft.space/api/account/profile", {headers: new Headers({
+            "Authorization" : "Bearer " + localStorage.getItem("token")
+        })
+    })
+    .then((response) => {
+        if (response.ok){
+            let navbarLeft = $("#navbar-left");
+            let navbarRight = $("#navbar-right");
+            let template = $("#auth-user-navbar-template");
+            let leftBlockOne = template.clone();
+            leftBlockOne.find(".nav-link").text("Избранное");
+            leftBlockOne.find(".nav-link").addClass("text-muted");
+            leftBlockOne.removeClass("d-none");
+            navbarLeft.append(leftBlockOne);
+            let leftBlockTwo = template.clone();
+            leftBlockTwo.find(".nav-link").text("Мой профиль");
+            leftBlockTwo.find(".nav-link").addClass("text-muted");
+            leftBlockTwo.removeClass("d-none");
+            navbarLeft.append(leftBlockTwo);
+            navbarRight.empty();
+            let rightBlockOne = template.clone();
+            rightBlockOne.find(".nav-link").attr("id", 'add-nickname');
+            rightBlockOne.removeClass("d-none");
+            navbarRight.append(rightBlockOne);
+            let rightBlockTwo = template.clone();
+            rightBlockTwo.find(".nav-link").text("Выйти");
+            rightBlockTwo.removeClass("d-none");
+            navbarRight.append(rightBlockTwo);
+            return response.json();
+        }
+    })
+    .then((json) =>{
+        console.log(json);
+        $("#add-nickname").text("Авторизован как - " + json.nickName);
+    })
 }
