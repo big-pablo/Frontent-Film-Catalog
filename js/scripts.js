@@ -56,7 +56,7 @@ function CheckforAuth(){
             "Authorization" : "Bearer " + localStorage.getItem("token")
         })
     })
-    .then((response) => {
+    .then(async (response) => {
         if (response.ok){
             let navbarLeft = $("#navbar-left");
             let navbarRight = $("#navbar-right");
@@ -79,12 +79,16 @@ function CheckforAuth(){
             let rightBlockTwo = template.clone();
             rightBlockTwo.find(".nav-link").text("Выйти");
             rightBlockTwo.removeClass("d-none");
+            rightBlockTwo.attr('onclick', 'Logout()');
             navbarRight.append(rightBlockTwo);
-            return response.json();
+            let json = await response.json();
+            console.log(json);
+        $("#add-nickname").text("Авторизован как - " + json.nickName);
         }
     })
-    .then((json) =>{
-        console.log(json);
-        $("#add-nickname").text("Авторизован как - " + json.nickName);
-    })
+}
+
+function Logout()
+{
+    localStorage.clear();
 }
