@@ -1,20 +1,20 @@
 $(document).ready(function (){
-    LoadFilms();
-    CheckforAuth();
+    let pages = LoadFilms();
+    console.log(typeof(pages));
+    CreatePagination(pages[0], pages[1]);
 });
-
-function LoadFilms(){
-    fetch("https://react-midterm.kreosoft.space/api/movies/1")
+function LoadFilms(page=1){
+    fetch(`https://react-midterm.kreosoft.space/api/movies/${page}`)
     .then((response) => {
         return response.json();
     })
     .then((json) => {
         $("#films-container").empty();
-        let template = $('#film-card');
+        let template = $('.film-card');
         for (let film of json.movies)
         {
             let block = template.clone();
-            block.attr("filmid", film.id);
+            block.attr("id", film.id);
             block.find("#film-header").text(film.name);
             block.find("#film-image").attr("src", film.poster);
             block.find("#film-year").text(film.year);
@@ -48,47 +48,31 @@ function LoadFilms(){
             block.removeClass("d-none");
             $("#films-container").append(block);
         }
+        console.log([json.pageInfo.currentPage,json.pageInfo.pageCount]);
+        return [json.pageInfo.currentPage,json.pageInfo.pageCount];
     });
 }
 
-function CheckforAuth(){
-    fetch("https://react-midterm.kreosoft.space/api/account/profile", {headers: new Headers({
-            "Authorization" : "Bearer " + localStorage.getItem("token")
-        })
-    })
-    .then(async (response) => {
-        if (response.ok){
-            let navbarLeft = $("#navbar-left");
-            let navbarRight = $("#navbar-right");
-            let template = $("#auth-user-navbar-template");
-            let leftBlockOne = template.clone();
-            leftBlockOne.find(".nav-link").text("Избранное");
-            leftBlockOne.find(".nav-link").addClass("text-muted");
-            leftBlockOne.removeClass("d-none");
-            navbarLeft.append(leftBlockOne);
-            let leftBlockTwo = template.clone();
-            leftBlockTwo.find(".nav-link").text("Мой профиль");
-            leftBlockTwo.find(".nav-link").addClass("text-muted");
-            leftBlockTwo.removeClass("d-none");
-            navbarLeft.append(leftBlockTwo);
-            navbarRight.empty();
-            let rightBlockOne = template.clone();
-            rightBlockOne.find(".nav-link").attr("id", 'add-nickname');
-            rightBlockOne.removeClass("d-none");
-            navbarRight.append(rightBlockOne);
-            let rightBlockTwo = template.clone();
-            rightBlockTwo.find(".nav-link").text("Выйти");
-            rightBlockTwo.removeClass("d-none");
-            rightBlockTwo.attr('onclick', 'Logout()');
-            navbarRight.append(rightBlockTwo);
-            let json = await response.json();
-            console.log(json);
-        $("#add-nickname").text("Авторизован как - " + json.nickName);
-        }
-    })
+function CreatePagination(currentPage, pagesAmount)
+{
+    let template = $(".page-number-template");
+    for (let i = 1; i <= pagesAmount; i++)
+    {
+        let block = template.clone();
+        block.find(".page-link").text(i);
+        block.removeClass('d-none');
+        block.insertBefore($(".pagination #next-sign"));
+    }
+    PageChangeEvent();
 }
 
-function Logout()
+function PageChangeEvent()
 {
-    localStorage.clear();
+    $(".page-number-template").click(function() {
+        console.log('Зашли');
+        $(".page-number-template").removeClass('active');
+        $(this).addClass('active');
+        console.log($(this).text());
+        LoadFilms($(this).text());
+    })
 }
