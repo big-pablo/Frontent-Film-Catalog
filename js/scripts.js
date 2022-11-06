@@ -43,7 +43,7 @@ function LoadFilms(){
             }
             else
             {
-                block.find("#film-rating").text(block.find("#film-rating").text() + avgRating);
+                block.find("#film-rating").text(block.find("#film-rating").text() + avgRating.toFixed(1));
             }
             block.removeClass("d-none");
             $("#films-container").append(block);
