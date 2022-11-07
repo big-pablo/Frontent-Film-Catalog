@@ -1,7 +1,6 @@
 $(document).ready(function (){
-    let pages = LoadFilms();
-    console.log(typeof(pages));
-    CreatePagination(pages[0], pages[1]);
+    LoadFilms(localStorage.getItem('currentPage'));
+    CreatePagination(localStorage.getItem("totalPages"), localStorage.getItem('currentPage'));
 });
 function LoadFilms(page=1){
     fetch(`https://react-midterm.kreosoft.space/api/movies/${page}`)
@@ -43,17 +42,17 @@ function LoadFilms(page=1){
             }
             else
             {
-                block.find("#film-rating").text(block.find("#film-rating").text() + avgRating);
+                block.find("#film-rating").text(block.find("#film-rating").text() + avgRating.toFixed(1));
             }
             block.removeClass("d-none");
             $("#films-container").append(block);
         }
-        console.log([json.pageInfo.currentPage,json.pageInfo.pageCount]);
-        return [json.pageInfo.currentPage,json.pageInfo.pageCount];
+        localStorage.setItem("currentPage", json.pageInfo.currentPage);
+        localStorage.setItem("totalPages", json.pageInfo.pageCount)
     });
 }
 
-function CreatePagination(currentPage, pagesAmount)
+function CreatePagination(pagesAmount, currentPage)
 {
     let template = $(".page-number-template");
     for (let i = 1; i <= pagesAmount; i++)
@@ -61,18 +60,42 @@ function CreatePagination(currentPage, pagesAmount)
         let block = template.clone();
         block.find(".page-link").text(i);
         block.removeClass('d-none');
+        block.attr('page', i);
+        if (i == currentPage)
+        {
+            block.addClass('active');
+        }
         block.insertBefore($(".pagination #next-sign"));
     }
     PageChangeEvent();
+
 }
 
 function PageChangeEvent()
 {
     $(".page-number-template").click(function() {
-        console.log('Зашли');
         $(".page-number-template").removeClass('active');
         $(this).addClass('active');
-        console.log($(this).text());
         LoadFilms($(this).text());
+    })
+    $("#next-sign").click(function(){
+        let currentPage = $(`[page=${localStorage.getItem('currentPage')}]`).attr("page");
+        let nextPage = Number(currentPage)+1;
+        if (nextPage <= localStorage.getItem('totalPages'))
+        {
+            $(`[page=${localStorage.getItem('currentPage')}]`).removeClass("active");
+            $(`[page=${nextPage}]`).addClass("active");
+            LoadFilms(nextPage);
+        }
+    })
+    $("#previous-sign").click(function(){
+        let currentPage = $(`[page=${localStorage.getItem('currentPage')}]`).attr("page");
+        let previousPage = Number(currentPage)-1;
+        if (previousPage > 0)
+        {
+            $(`[page=${localStorage.getItem('currentPage')}]`).removeClass("active");
+            $(`[page=${previousPage}]`).addClass("active");
+            LoadFilms(previousPage);
+        }
     })
 }
