@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
-    <div class="border row d-none film-card">
+    <div class="border row d-none inner-element" id="film-card">
         <img id="film-image" class="col-2 mt-2 mb-3 film-image" src="" alt="">
         <div class="col-8 mt-3">
         <h3 id="film-header"></h3>
@@ -35,7 +35,7 @@
                 <a class="nav-link active" href="/html/login.html">Вход</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="">Регистрация</a>
+                <a class="nav-link active" disabled href="/html/registration.html">Регистрация</a>
             </li>
         </ul>
         </div>
@@ -47,13 +47,13 @@
   </main>
   <nav class="mt-5">
     <ul class="pagination justify-content-center">
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Предыдущая">
+      <li class="page-item" id="previous-sign">
+        <a class="page-link" aria-label="Предыдущая">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
       <li class="page-item" id="next-sign">
-        <a class="page-link" href="#" aria-label="Следующая">
+        <a class="page-link" aria-label="Следующая">
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>

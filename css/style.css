@@ -6,12 +6,17 @@
     margin-top: 10rem!important;
 }
 
+body {
+    background-color: #f8f9fa!important;
+}
 
 .films-container
 {
     margin: 0px 80px 0px 80px;
 }
-
+.inner-element{
+    background-color: white;
+}
 .film-image
 {
     object-position: center;
