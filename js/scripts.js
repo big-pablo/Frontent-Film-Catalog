@@ -1,4 +1,5 @@
 $(document).ready(function (){
+    CheckforAuth();
     LoadFilms(localStorage.getItem('currentPage'));
     CreatePagination(localStorage.getItem("totalPages"), localStorage.getItem('currentPage'));
 });
@@ -9,7 +10,7 @@ function LoadFilms(page=1){
     })
     .then((json) => {
         $("#films-container").empty();
-        let template = $('.film-card');
+        let template = $('#film-card');
         for (let film of json.movies)
         {
             let block = template.clone();
@@ -98,4 +99,46 @@ function PageChangeEvent()
             LoadFilms(previousPage);
         }
     })
+}
+
+    function CheckforAuth(){
+        fetch("https://react-midterm.kreosoft.space/api/account/profile", {headers: new Headers({
+                "Authorization" : "Bearer " + localStorage.getItem("token")
+            })
+        })
+        .then(async (response) => {
+            if (response.ok){
+                let navbarLeft = $("#navbar-left");
+                let navbarRight = $("#navbar-right");
+                let template = $("#auth-user-navbar-template");
+                let leftBlockOne = template.clone();
+                leftBlockOne.find(".nav-link").text("Избранное");
+                leftBlockOne.find(".nav-link").addClass("text-muted");
+                leftBlockOne.removeClass("d-none");
+                navbarLeft.append(leftBlockOne);
+                let leftBlockTwo = template.clone();
+                leftBlockTwo.find(".nav-link").text("Мой профиль");
+                leftBlockTwo.find(".nav-link").addClass("text-muted");
+                leftBlockTwo.removeClass("d-none");
+                navbarLeft.append(leftBlockTwo);
+                navbarRight.empty();
+                let rightBlockOne = template.clone();
+                rightBlockOne.find(".nav-link").attr("id", 'add-nickname');
+                rightBlockOne.removeClass("d-none");
+                navbarRight.append(rightBlockOne);
+                let rightBlockTwo = template.clone();
+                rightBlockTwo.find(".nav-link").text("Выйти");
+                rightBlockTwo.removeClass("d-none");
+                rightBlockTwo.attr('onclick', 'Logout()');
+                navbarRight.append(rightBlockTwo);
+                let json = await response.json();
+            $("#add-nickname").text("Авторизован как - " + json.nickName);
+            }
+        })
+    }   
+
+function Logout()
+{
+    localStorage.removeItem("token");
+    window.location.href = "/index.html";
 }
