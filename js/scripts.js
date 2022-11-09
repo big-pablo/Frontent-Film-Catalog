@@ -115,6 +115,7 @@ function PageChangeEvent()
                 let leftBlockOne = template.clone();
                 leftBlockOne.find(".nav-link").text("Избранное");
                 leftBlockOne.find(".nav-link").addClass("text-muted");
+                leftBlockOne.find(".nav-link    ").attr('href', "/html/favourites.html");
                 leftBlockOne.removeClass("d-none");
                 navbarLeft.append(leftBlockOne);
                 let leftBlockTwo = template.clone();
