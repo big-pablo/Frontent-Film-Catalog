@@ -63,10 +63,10 @@ function Register()
         return;
     }
     let userRegister = {
-        userName: $("#inputLogin").val(),
-        name: $("#name").val(),
-        password: inputPassword.val(),
-        email: emailInput.val(),
+        userName: $("#inputLogin").val().trim(),
+        name: $("#name").val().trim(),
+        password: inputPassword.val().trim(),
+        email: emailInput.val().trim(),
         birthDate: new Date($("#birthDate").val()).toISOString(),
         gender: parseInt($("#sex").val())
     } 
@@ -88,6 +88,7 @@ function Register()
     {
         let json = await response.json();
         console.log(json);
+        localStorage.setItem('id', json.id);
         localStorage.setItem('token',json.token);
         window.location.href = '/index.html';
     }

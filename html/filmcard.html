@@ -34,10 +34,10 @@
                 <img id="film-image" class="" src="" alt="">
             </div>
             <div class="col">
-                <h2 class="row mb-2" id="name">Побег из Шоушенка (1994)</h3>
+                <h2 class="row mb-2" id="name">Побег из Шоушенка (1994)</h2>
                 <div class="row mb-4" id="description">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quos voluptatibus quo inventore laborum rem architecto explicabo praesentium repellendus excepturi necessitatibus! Aperiam excepturi eos aliquid accusamus minima facere ratione nesciunt minus.</div>
                 <button class="row btn-outline-primary mb-2" id="favbutton">Добавить в избранное +</button>
-                <h4 class="row pt-2">О фильме</h3>
+                <h4 class="row pt-2">О фильме</h4>
                 <div class="row">
                     <div class="col pe-0">
                         <div class="row mb-2 film-criteria">
@@ -80,8 +80,57 @@
                 </div>
             </div>
             <h4 class="row ps-4">Отзывы и оценки</h4>
+            <div class="border rounded col m-3 d-none" id="addReviewField">
+                <div class="row p-1 ps-3 border bg-light">Добавить отзыв</div>
+                <div class="col mb-3">
+                    <label class="form-label row ps-3 pt-2">Текст отзыва</label>
+                    <textarea class="form-control" id="reviewText" rows="2"></textarea>
+                    <label class="form-label row ps-3 pt-2 fw-bold">Оценка</label>
+                    <select class="form-select" id="reviewPoint">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                      </select>
+                      <div class="mt-3">
+                        <input class="form-check-input" type="checkbox" id="anonymousReview">
+                        <label class="form-check-label" for="flexCheckDefault">
+                          Оставить отзыв анонимно
+                        </label>
+                      </div>
+                      <button type="button" class="btn btn-primary mt-3" id="saveReview">Сохранить</button>
+                      <button type="button" class="btn btn-primary mt-3 d-none" id="saveAfterEditReview">Сохранить</button>
+                </div>
+            </div>
             <div class="review-container">
-
+                <div class="review mb-3 d-none" id="myReview">
+                    <div class="row reviewer-name border">
+                        <img class="rounded-circle col user-avatar" src="/avatar.png" id="myAvatar">
+                        <div class="col fw-bold align-self-center user-nickname" id="myNickname">ExampleNickname (Ваш отзыв)</div>
+                        <div class="col-auto">
+                            <div class="row">
+                                <div class="col-auto pe-1">Оценка:</div>
+                                <div class="col-auto rating" id="myRating">8</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto pe-1">Дата отзыва:</div> 
+                                <div class="col-auto ps-0 review-date" id="myDate">05.12.2022</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col p-3 review-text" id="myReviewText">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Beatae incidunt expedita nostrum asperiores voluptatem illo hic ab quos. Velit sapiente laudantium cupiditate delectus asperiores quasi perspiciatis doloribus quidem facere recusandae.</div>
+                    <div class="col border reviewer-name ps-3">
+                        <button type="button" class="btn btn-warning" id="editReview">Редактировать</button>
+                        <button type="button" class="btn btn-danger" id="deleteReview">Удалить</button>
+                    </div>
+                </div>
             </div>
         </div>
   </main>

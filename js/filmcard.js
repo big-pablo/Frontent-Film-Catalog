@@ -50,35 +50,47 @@ function LoadFilmDetails()
     })
 }
 
-function MoneySplit(string)
-{
-    let digits = string.split("");
-    let result = "";
-    for(let i = digits.length-1; i>=0;i-=3)
-    {
-        if (digits[i] != undefined)
-        {
-            result += digits[i];
-        }
-        if (digits[i-1] != undefined)
-        {
-            result += digits[i-1];
-        }
-        if (digits[i-2] != undefined)
-        {
-            result += digits[i-2];
-        }
-        result += " ";
-    }
-    return(result.split("").reverse().join("").trimStart());
-}
-
 function LoadReviews(json)
 {
     console.log(json.reviews);
-    for (let review in json.reviews)
+    for (let lookingForMine of json.reviews)
     {
+        if (lookingForMine.author.userId == localStorage.getItem("id"))
+        {
+            $("#myReview").attr("reviewId", lookingForMine.id);
+            $("#myRating").text(lookingForMine.rating);
+            if (Number(lookingForMine.rating) > 5)
+            {
+                $("#myReview").addClass("good-review")
+            }
+            else
+            {
+                $("#myReview").addClass('bad-review');
+            }
+            let dateTime = lookingForMine.createDateTime.split("T");
+            $("#myDate").text(ParseDate(dateTime[0]))
+            if (lookingForMine.isAnonymous)
+            {
+                $("#myNickname").text("Анонимный пользователь (Мой отзыв)");
+            }
+            else
+            {
+                $("#myNickname").text(`${lookingForMine.author.nickName} (Мой отзыв)`);
+                $("#myAvatar").attr("src", lookingForMine.author.avatar);
+            }
+            $("#myReviewText").text(lookingForMine.reviewText);
+            $("#myReview").removeClass("d-none");
+            $("#saveReview").attr('disabled', 'false');
+            $("#addReviewField").addClass('d-none');
+            $("#editReview").click(EditReview);
+            $("#deleteReview").click(DeleteReview);
+        }
+    }
+    for (let review in json.reviews)
+    {   
         let currReview = json.reviews[review];
+        console.log(currReview.author.userId);
+        if (currReview.author.userId != localStorage.getItem('id')){
         let block = $(".review-template").clone();
         if (!currReview.isAnonymous)
         {
@@ -107,6 +119,7 @@ function LoadReviews(json)
         block.removeClass('d-none');
         block.removeClass("review-template");
         $(".review-container").append(block);
+    }
     }
     CheckforFavourites(json);
 }
@@ -146,6 +159,9 @@ if (response.ok){
     rightBlockTwo.click(Logout);
     navbarRight.append(rightBlockTwo);
     let json = await response.json();
+    localStorage.setItem('id', json.id);
+    $("#addReviewField").removeClass('d-none');
+    $("#saveReview").click(SendReview);
     $("#add-nickname").text("Авторизован как - " + json.nickName);
     $("#add-nickname").attr('href', '/html/profile.html');
 }
@@ -154,18 +170,29 @@ else
     $("#favbutton").addClass("disabled");
     $("#favbutton").attr("disabled",'true');
     $("#favbutton").text("Зарегистрируйтесь или войдите");
+    localStorage.removeItem('id');
 }
+
 })
 }   
 
 
-function ParseDate(date)
+function SendReview()
 {
-    let YYYYMMDD = date.split("-");
-    let result = YYYYMMDD[2] + ".";
-    result += YYYYMMDD[1] + ".";
-    result += YYYYMMDD[0];
-    return result
+    let reviewData = {
+        reviewText: $("#reviewText").val(),
+        rating : Number($("#reviewPoint").val()),
+        isAnonymous : $("#anonymousReview").is(":checked")
+    }
+    fetch(`https://react-midterm.kreosoft.space/api/movie/${localStorage.getItem("currentFilm")}/review/add`, 
+    {method:"POST", headers: new Headers({
+        "Authorization" : "Bearer " + localStorage.getItem("token"),
+        "Content-Type" : "application/json",
+    }), body: JSON.stringify(reviewData)})
+    .then(async (response) => {
+        let json = await response.json;
+        window.location.href = "/html/filmcard.html";
+    })
 }
 
 function CheckforFavourites(json)
@@ -208,8 +235,90 @@ function AddToFavourites()
     })
 }
 
+function EditReview()
+{
+    $("#addReviewField").removeClass('d-none');
+    $("#myReview").addClass('d-none');
+    $("#reviewText").text($("#myReviewText").text());
+    $(`#reviewPoint option[value=${$("#myRating").text()}]`).prop('selected', true);
+    $("#saveReview").addClass('d-none');
+    $("#saveAfterEditReview").removeClass('d-none');
+    $("#saveAfterEditReview").click(UpdateReview);
+}
+
+function UpdateReview()
+{
+    let reviewData = {
+        reviewText: $("#reviewText").val(),
+        rating : Number($("#reviewPoint").val()),
+        isAnonymous : $("#anonymousReview").is(":checked")
+    } //Не работает исправление отзыва на анонимный, хотя выглядит всё заурядно
+    console.log(reviewData);
+    let url = `https://react-midterm.kreosoft.space/api/movie/${localStorage.getItem('currentFilm')}/review/${$("#myReview").attr("reviewid")}/edit`
+    console.log(url);
+    fetch(url, 
+    {method:"PUT", headers: new Headers({
+        "Content-Type" : "application/json",
+        "Authorization" : "Bearer " + localStorage.getItem("token")
+    }), body: JSON.stringify(reviewData)})
+    .then((response) => {
+        console.log(response);
+        let json = response.json;
+        console.log(json);
+        window.location.href = "/html/filmcard.html";
+    })
+}
+
+function DeleteReview()
+{
+    let url = `https://react-midterm.kreosoft.space/api/movie/${localStorage.getItem('currentFilm')}/review/${$("#myReview").attr("reviewid")}/delete`;
+    fetch(url, 
+        {method:"DELETE", headers: new Headers({
+            "Content-Type" : "application/json",
+            "Authorization" : "Bearer " + localStorage.getItem("token")
+        })})
+    .then((response) => {
+        console.log(response);
+        window.location.href = "/html/filmcard.html";
+    })
+}
+
 function Logout()
 {
     localStorage.removeItem("token");
+    localStorage.removeItem("id");  
     window.location.href = "/index.html";
 }
+
+function MoneySplit(string)
+{
+    let digits = string.split("");
+    let result = "";
+    for(let i = digits.length-1; i>=0;i-=3)
+    {
+        if (digits[i] != undefined)
+        {
+            result += digits[i];
+        }
+        if (digits[i-1] != undefined)
+        {
+            result += digits[i-1];
+        }
+        if (digits[i-2] != undefined)
+        {
+            result += digits[i-2];
+        }
+        result += " ";
+    }
+    return(result.split("").reverse().join("").trimStart());
+}
+
+function ParseDate(date)
+{
+    let YYYYMMDD = date.split("-");
+    let result = YYYYMMDD[2] + ".";
+    result += YYYYMMDD[1] + ".";
+    result += YYYYMMDD[0];
+    return result
+}
+

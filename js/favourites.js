@@ -12,6 +12,7 @@ function CheckforAuth(){
         if (response.ok){
             let json = await response.json();
             $("#add-nickname").text("Авторизован как - " + json.nickName);
+            localStorage.setItem('id', json.id);
         }
         else
         {
@@ -71,24 +72,20 @@ function LoadFavourites()
                 block.find("#film-rating").text(block.find("#film-rating").text() + avgRating.toFixed(1));
             }
             block.find(".btn-danger").attr('id', json.movies[film].id);
-            block.find(".btn-danger").click(function(){
+            block.find(".btn-danger").click(function(){ //Вешаю функцию удаления
                 let id = $(this).attr('id');
                 fetch(`https://react-midterm.kreosoft.space/api/favorites/${id}/delete`, {headers: new Headers({
-        "Authorization" : "Bearer " + localStorage.getItem("token")
-    }), method:"DELETE"
-    })
-    .then((response) => {
-        if (response.ok)
-        {
-            window.location.href = "/html/favourites.html";
-        }
-    })
-            });
+                "Authorization" : "Bearer " + localStorage.getItem("token")
+                }), method:"DELETE"
+                })
+                .then((response) => {
+                    if (response.ok)
+                    {
+                        window.location.href = "/html/favourites.html";
+                    }
+                })
+            }); //Функция удаления кончилась
             block.removeClass("d-none");
-            block.find(`#${json.movies[film].id}`).click(function(){
-                localStorage.setItem("currentFilm", $(this).attr('id'));
-                window.location.href = '/html/filmcard.html';
-            })
             $("#films-container").append(block);
         }
     })

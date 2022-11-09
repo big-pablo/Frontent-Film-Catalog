@@ -14,7 +14,9 @@ function CheckforAuth(){
         if (response.ok){
             let json = await response.json();
             console.log(json);
+            localStorage.setItem('id',json.id);
             $("#add-nickname").text("Авторизован как - " + json.nickName);
+            $("#addReviewField").removeClass('d-none');
             FillCurrentData(json);
         }
         else

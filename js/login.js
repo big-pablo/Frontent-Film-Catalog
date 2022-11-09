@@ -22,6 +22,7 @@ function Login()
         {
             let json = await response.json();
             localStorage.setItem('token',json.token);
+            localStorage.setItem('id', json.id);
             window.location.href = '/index.html';
         }
         else

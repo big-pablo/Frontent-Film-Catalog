@@ -1,6 +1,13 @@
 $(document).ready(function (){
     CheckforAuth();
-    LoadFilms(localStorage.getItem('currentPage'));
+    if (localStorage.getItem("currentPage") != null)
+    {
+        LoadFilms(localStorage.getItem('currentPage'))
+    }
+    else
+    {
+        LoadFilms()
+    }
     CreatePagination(localStorage.getItem("totalPages"), localStorage.getItem('currentPage'));
 });
 function LoadFilms(page=1){
@@ -142,6 +149,7 @@ function PageChangeEvent()
                 rightBlockTwo.attr('onclick', 'Logout()');
                 navbarRight.append(rightBlockTwo);
                 let json = await response.json();
+                    localStorage.setItem('id', json.id);
             $("#add-nickname").text("Авторизован как - " + json.nickName);
             $("#add-nickname").attr('href', '/html/profile.html');
             }
