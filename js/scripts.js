@@ -43,7 +43,14 @@ function LoadFilms(page=1){
             }
             else
             {
-                block.find("#film-rating").text(block.find("#film-rating").text() + avgRating.toFixed(1));
+                if (avgRating == 10)
+                {
+                    block.find("#film-rating").text(block.find("#film-rating").text() + avgRating.toFixed(0));    
+                }
+                else
+                {
+                    block.find("#film-rating").text(block.find("#film-rating").text() + avgRating.toFixed(1));
+                }
             }
             block.removeClass("d-none");
             $("#films-container").append(block);
@@ -120,6 +127,7 @@ function PageChangeEvent()
                 navbarLeft.append(leftBlockOne);
                 let leftBlockTwo = template.clone();
                 leftBlockTwo.find(".nav-link").text("Мой профиль");
+                leftBlockTwo.find(".nav-link").attr("href",'/html/profile.html');
                 leftBlockTwo.find(".nav-link").addClass("text-muted");
                 leftBlockTwo.removeClass("d-none");
                 navbarLeft.append(leftBlockTwo);
@@ -135,6 +143,7 @@ function PageChangeEvent()
                 navbarRight.append(rightBlockTwo);
                 let json = await response.json();
             $("#add-nickname").text("Авторизован как - " + json.nickName);
+            $("#add-nickname").attr('href', '/html/profile.html');
             }
         })
     }   

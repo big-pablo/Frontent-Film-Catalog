@@ -28,17 +28,54 @@ function LoadFilmDetails()
         $("#time").text(`${json.time} мин.`);
         $("#motto").text(json.tagline);
         $("#producer").text(json.director);
-        $("#budget").text(`$${json.budget}`);
-        $("#fees").text(`$${json.fees}`);
+        if (json.budget != null)
+        {
+            $("#budget").text(`$${MoneySplit(String(json.budget))}`);
+        }
+        else
+        {
+            $("#budget").text("-");
+        }
+        if (json.fees != null)
+        {
+            $("#fees").text(`$${MoneySplit(String(json.fees))}`);
+        }
+        else
+        {
+            $("#fees").text("-");
+        }
         $("#age").text(`${json.ageLimit}+`);
         $("#favbutton").click(AddToFavourites);
         LoadReviews(json);
     })
 }
 
+function MoneySplit(string)
+{
+    let digits = string.split("");
+    let result = "";
+    for(let i = digits.length-1; i>=0;i-=3)
+    {
+        if (digits[i] != undefined)
+        {
+            result += digits[i];
+        }
+        if (digits[i-1] != undefined)
+        {
+            result += digits[i-1];
+        }
+        if (digits[i-2] != undefined)
+        {
+            result += digits[i-2];
+        }
+        result += " ";
+    }
+    return(result.split("").reverse().join("").trimStart());
+}
+
 function LoadReviews(json)
 {
-    console.log(json);
+    console.log(json.reviews);
     for (let review in json.reviews)
     {
         let currReview = json.reviews[review];
@@ -95,6 +132,7 @@ if (response.ok){
     let leftBlockTwo = template.clone();
     leftBlockTwo.find(".nav-link").text("Мой профиль");
     leftBlockTwo.find(".nav-link").addClass("text-muted");
+    leftBlockTwo.find(".nav-link").attr("href",'/html/profile.html');
     leftBlockTwo.removeClass("d-none");
     navbarLeft.append(leftBlockTwo);
     navbarRight.empty();
@@ -108,7 +146,8 @@ if (response.ok){
     rightBlockTwo.click(Logout);
     navbarRight.append(rightBlockTwo);
     let json = await response.json();
-$("#add-nickname").text("Авторизован как - " + json.nickName);
+    $("#add-nickname").text("Авторизован как - " + json.nickName);
+    $("#add-nickname").attr('href', '/html/profile.html');
 }
 else
 {
@@ -139,7 +178,6 @@ function CheckforFavourites(json)
         if (response.ok)
         {      
             let favs = await response.json();
-            console.log(favs);
             let currID = json.id;
             for (movie of favs.movies)
             {

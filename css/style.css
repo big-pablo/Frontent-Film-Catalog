@@ -129,3 +129,15 @@ body {
     max-height: 150px;
     object-fit: scale-down;
 }
+
+.avatar-image
+{
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+}
+
+.negative-margin
+{
+    margin-left: -0.8rem !important;
+}
