@@ -32,5 +32,10 @@ body {
     background: #0e6efd;
     border: 4px solid #0e6efd;
     border-radius: 10px;
-    text-align: center;
+}
+
+.favourite-image
+{
+    max-height: 150px;
+    object-fit: scale-down;
 }
