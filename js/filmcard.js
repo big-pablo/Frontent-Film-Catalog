@@ -1,5 +1,4 @@
-$(document).ready(function() {
-    console.log('work');    
+$(document).ready(function() { 
     LoadFilmDetails();
     CheckforAuth();
 })
@@ -10,6 +9,7 @@ function LoadFilmDetails()
     fetch(`https://react-midterm.kreosoft.space/api/movies/details/${localStorage.getItem("currentFilm")}`)
     .then(async (response) =>{
         let json = await response.json();
+        $("#film-card").attr("id", json.id);
         $("#film-image").attr('src', json.poster);
         $("#name").text(`${json.name} (${json.year})`);
         $("#description").text(json.description);
@@ -31,6 +31,7 @@ function LoadFilmDetails()
         $("#budget").text(`$${json.budget}`);
         $("#fees").text(`$${json.fees}`);
         $("#age").text(`${json.ageLimit}+`);
+        $("#favbutton").click(AddToFavourites);
         LoadReviews(json);
     })
 }
@@ -55,7 +56,6 @@ function LoadReviews(json)
             block.find(".user-nickname").text("Анонимный пользователь");
         }
         block.find(".rating").text(currReview.rating);
-        console.log(Number(currReview.rating))
         if (Number(currReview.rating) > 5)
         {
             block.addClass("good-review")
@@ -71,6 +71,7 @@ function LoadReviews(json)
         block.removeClass("review-template");
         $(".review-container").append(block);
     }
+    CheckforFavourites(json);
 }
 
 
@@ -88,6 +89,7 @@ if (response.ok){
     let leftBlockOne = template.clone();
     leftBlockOne.find(".nav-link").text("Избранное");
     leftBlockOne.find(".nav-link").addClass("text-muted");
+    leftBlockOne.find(".nav-link").attr('href','/html/favourites.html');
     leftBlockOne.removeClass("d-none");
     navbarLeft.append(leftBlockOne);
     let leftBlockTwo = template.clone();
@@ -103,10 +105,16 @@ if (response.ok){
     let rightBlockTwo = template.clone();
     rightBlockTwo.find(".nav-link").text("Выйти");
     rightBlockTwo.removeClass("d-none");
-    rightBlockTwo.attr('onclick', 'Logout()');
+    rightBlockTwo.click(Logout);
     navbarRight.append(rightBlockTwo);
     let json = await response.json();
 $("#add-nickname").text("Авторизован как - " + json.nickName);
+}
+else
+{
+    $("#favbutton").addClass("disabled");
+    $("#favbutton").attr("disabled",'true');
+    $("#favbutton").text("Зарегистрируйтесь или войдите");
 }
 })
 }   
@@ -119,4 +127,51 @@ function ParseDate(date)
     result += YYYYMMDD[1] + ".";
     result += YYYYMMDD[0];
     return result
+}
+
+function CheckforFavourites(json)
+{
+    fetch("https://react-midterm.kreosoft.space/api/favorites", {headers: new Headers({
+        "Authorization" : "Bearer " + localStorage.getItem("token")
+    })
+})
+    .then(async (response) => {
+        if (response.ok)
+        {      
+            let favs = await response.json();
+            console.log(favs);
+            let currID = json.id;
+            for (movie of favs.movies)
+            {
+                if (currID == movie.id)
+                {
+                    $("#favbutton").addClass("disabled");
+                    $("#favbutton").attr("disabled",'true');
+                    $("#favbutton").text("Уже в избранном");
+                }
+            }
+        }
+    })
+}
+
+function AddToFavourites()
+{
+    fetch(`https://react-midterm.kreosoft.space/api/favorites/${$(".film-card").attr('id')}/add`, {headers: new Headers({
+    "Authorization" : "Bearer " + localStorage.getItem("token"),
+}), method: "POST"
+})
+    .then((response) => {
+        if (response.ok)
+        {
+            $("#favbutton").addClass("disabled");
+            $("#favbutton").attr("disabled",'true');
+            $("#favbutton").text("Уже в избранном");
+        }
+    })
+}
+
+function Logout()
+{
+    localStorage.removeItem("token");
+    window.location.href = "/index.html";
 }

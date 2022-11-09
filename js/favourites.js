@@ -35,33 +35,33 @@ function LoadFavourites()
 })
     .then(async (response)=>{
         let json = await response.json();
-        console.log(json);
         for (let film in json.movies)
         {
             let block = $("#film-card").clone();
-            block.attr('id', json.movies[film]);
-            block.find("#film-header").text(film.name);
-            block.find("#film-image").attr("src", film.poster);
-            block.find("#film-year").text(film.year);
+            block.attr('id', json.movies[film].id);
+            block.find("#film-header").text(json.movies[film].name);
+            block.find("#film-image").attr("src", json.movies[film].poster);
+            block.find("#film-image").attr('id', json.movies[film].id);
+            block.find("#film-year").text(json.movies[film].year);
             let countryAndGenreBlock = block.find("#film-country-n-genre");
-            countryAndGenreBlock.text(`${film.country} ●`);
-            for (let genre of film.genres)
+            countryAndGenreBlock.text(`${json.movies[film].country} ●`);
+            for (let genre in json.movies[film].genres)
             {
-                if (genre == film.genres[film.genres.length-1])
+                if (genre == json.movies[film].genres.length-1)
                 {
-                    countryAndGenreBlock.text(countryAndGenreBlock.text() + " " + genre.name);
+                    countryAndGenreBlock.text(countryAndGenreBlock.text() + " " + json.movies[film].genres[genre].name);
                 }
                 else
                 {
-                    countryAndGenreBlock.text(countryAndGenreBlock.text() + " " + genre.name + ",");
+                    countryAndGenreBlock.text(countryAndGenreBlock.text() + " " + json.movies[film].genres[genre].name + ",");
                 }
             }
             let totalPoints = 0;
-            for (let review of film.reviews)
+            for (let review of json.movies[film].reviews)
             {
                 totalPoints += review.rating;
             }
-            let avgRating = totalPoints/film.reviews.length;
+            let avgRating = totalPoints/json.movies[film].reviews.length;
             if (isNaN(avgRating))
             {
                 block.find("#film-rating").text("Отзывов пока нет");
@@ -70,7 +70,25 @@ function LoadFavourites()
             {
                 block.find("#film-rating").text(block.find("#film-rating").text() + avgRating.toFixed(1));
             }
+            block.find(".btn-danger").attr('id', json.movies[film].id);
+            block.find(".btn-danger").click(function(){
+                let id = $(this).attr('id');
+                fetch(`https://react-midterm.kreosoft.space/api/favorites/${id}/delete`, {headers: new Headers({
+        "Authorization" : "Bearer " + localStorage.getItem("token")
+    }), method:"DELETE"
+    })
+    .then((response) => {
+        if (response.ok)
+        {
+            window.location.href = "/html/favourites.html";
+        }
+    })
+            });
             block.removeClass("d-none");
+            block.find(`#${json.movies[film].id}`).click(function(){
+                localStorage.setItem("currentFilm", $(this).attr('id'));
+                window.location.href = '/html/filmcard.html';
+            })
             $("#films-container").append(block);
         }
     })
