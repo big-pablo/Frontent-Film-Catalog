@@ -26,6 +26,16 @@ body {
     width: 100%;
 }
 
+.fav-button
+{
+    border: 1px solid #4f83ee;
+    background: white;
+    border-radius: 3px;
+    text-align: center;
+    color: #4f83ee;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
 .film-rating
 {
     color:white;
@@ -33,4 +43,78 @@ body {
     border: 4px solid #0e6efd;
     border-radius: 10px;
     text-align: center;
+}
+
+.film-criteria
+{
+    border-bottom: solid 2px #f0f0f0;
+}
+
+.age-rating
+{
+    background: gray;
+    border: solid gray 1px;
+    border-radius: 4px;
+    color: white;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.review
+{
+    border: solid black 1px;
+    border-radius: 2px;
+    padding-left: 0px!important;
+    padding-right: 0px!important;
+}
+
+.reviewer-name
+{
+    background: #f7f7f7;
+    margin: 0px!important;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.rating
+{
+    border: solid 1px;
+    border-radius: 4px;
+    color: white;
+}
+
+.user-avatar
+{
+    max-width: 75px!important;
+    max-height: 75px!important;
+    width: 100%;
+}
+
+.bad-review
+{
+    border-color: red;
+}
+.bad-review  .rating
+{
+    background: red;
+    border-color: red;
+}
+.bad-review  .review-text
+{
+    color: red;
+}
+
+.good-review
+{
+    border-color: green;
+}
+
+.good-review  .rating
+{
+    background: green;
+    border-color: green;
+}
+.good-review  .review-text
+{
+    color: green;
 }

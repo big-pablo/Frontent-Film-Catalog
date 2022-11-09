@@ -49,7 +49,8 @@ function LoadFilms(page=1){
             $("#films-container").append(block);
         }
         localStorage.setItem("currentPage", json.pageInfo.currentPage);
-        localStorage.setItem("totalPages", json.pageInfo.pageCount)
+        localStorage.setItem("totalPages", json.pageInfo.pageCount);
+        FilmClickEvent();
     });
 }
 
@@ -141,4 +142,12 @@ function Logout()
 {
     localStorage.removeItem("token");
     window.location.href = "/index.html";
+}
+
+function FilmClickEvent()
+{
+    $(".film-template").click(function(){
+        localStorage.setItem('currentFilm', $(this).attr('id'));
+        window.location.href = ("/html/filmcard.html");
+    })
 }
